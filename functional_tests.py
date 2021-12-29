@@ -12,6 +12,12 @@ class NewVisitorTest(unittest.TestCase):
         self.browser.quit()
 
 
+    def check_for_row_in_list_table(self, row_text):
+        table = self.browser.find_element_by_id('id_list_table')
+        rows = table.find_elements_by_tag_name('tr')
+        self.assertIn(row_text, [row.text for row in rows]) 
+
+
     def test_can_start_a_list_and_restrieve_it_later(self):
         # Edith ouviu falar em uma nova aplicacao online interessante
         # Para a lista de tarefas ela decidide verificar sua homepage
@@ -41,7 +47,7 @@ class NewVisitorTest(unittest.TestCase):
 
         table = self.browser.find_element_by_id('id_list_table')
         rows = table.find_elements_by_tag_name('tr')
-        self.assertIn('1: Buy peacock feathers', [row.text for row in rows])
+        self.check_for_row_in_list_table('1: Buy peacock feathers')
 
         # Ainda continua havendo uma caixa de texto convidando-a a acrescentar
         # outro item. Ela insere Use peacock feathers to make a fly"
@@ -52,13 +58,8 @@ class NewVisitorTest(unittest.TestCase):
         time.sleep(1)
 
         # A página então é atualizada novamente e agora mostra os dois itens em sua lista
-        table = self.browser.find_element_by_id('id_list_table')
-        rows = table.find_elements_by_tag_name('tr')
-        self.assertIn('1: Buy peacock feathers', [row.text for row in rows])
-        self.assertIn(
-            '2: Use peacock feathers to male a fly',
-            [row.text for row in rows]
-        )
+        self.check_for_row_in_list_table('1: Buy peacock feathers')
+        self.check_for_row_in_list_table('2: Use peacock feathers to make a fly')
 
         # Edith se pergunta se o site lembrará de sua lista. Então ela nota
         # que o site gerou um URL único para ela -- há um pequeno
